@@ -1,0 +1,28 @@
+repos:
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.77.2
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_docs
+      - id: terraform_tfsec
+      - id: terraform_checkov
+        args:
+        - --args=--skip-check CKV2_AWS_19
+      - id: terraform_tflint
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-json
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: detect-aws-credentials
+      - id: detect-private-key
+      - id: check-docstring-first
+      - id: check-added-large-files
+      - id: check-yaml
+      - id: debug-statements
+      - id: name-tests-test
+      - id: double-quote-string-fixer
+      - id: requirements-txt-fixer
