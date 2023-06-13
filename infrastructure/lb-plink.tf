@@ -1,16 +1,16 @@
-resource "azurerm_public_ip" "pip" {
-  for_each = local.pips
+# resource "azurerm_public_ip" "pip" {
+#   for_each = local.pips
 
-  name                = "pip-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
-  sku                 = each.value.sku
-  location            = azurerm_resource_group.resource_group[element(keys({ for n, val in local.vnets : n => val if val.type == "plink" }), 0)].location
-  resource_group_name = azurerm_resource_group.resource_group[element(keys({ for n, val in local.vnets : n => val if val.type == "plink" }), 0)].name
-  allocation_method   = each.value.alloc_method
+#   name                = "pip-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
+#   sku                 = each.value.sku
+#   location            = azurerm_resource_group.resource_group[element(keys({ for n, val in local.vnets : n => val if val.type == "plink" }), 0)].location
+#   resource_group_name = azurerm_resource_group.resource_group[element(keys({ for n, val in local.vnets : n => val if val.type == "plink" }), 0)].name
+#   allocation_method   = each.value.alloc_method
 
-  tags = merge(local.default_tags, {
-    Name = "pip-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
-  })
-}
+#   tags = merge(local.default_tags, {
+#     Name = "pip-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
+#   })
+# }
 
 resource "azurerm_lb" "lb" {
   for_each = local.lbs
@@ -21,8 +21,11 @@ resource "azurerm_lb" "lb" {
   resource_group_name = azurerm_resource_group.resource_group[element(keys({ for n, val in local.vnets : n => val if val.type == "plink" }), 0)].name
 
   frontend_ip_configuration {
-    name                 = azurerm_public_ip.pip[each.value.pip].name
-    public_ip_address_id = azurerm_public_ip.pip[each.value.pip].id
+    name                          = each.value.frontend_ip_name #azurerm_public_ip.pip[each.value.pip].name    
+    private_ip_address_allocation = "Static"
+    private_ip_address            = each.value.frontend_ip_address
+    subnet_id                     = azurerm_subnet.subnet[each.value.snet].id
+    #public_ip_address_id = azurerm_public_ip.pip[each.value.pip].id
   }
 
   tags = merge(local.default_tags, {

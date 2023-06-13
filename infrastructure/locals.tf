@@ -421,9 +421,11 @@ locals {
 
   lbs = {
     plink = {
-      frontend_ip = "192.168.0.10"
-      pip         = "lb"
-      location    = "northeurope"
+      frontend_ip_address = "192.168.0.10"
+      frontend_ip_name    = "lbi-frontend-ip"
+      pip                 = "lb"
+      location            = "northeurope"
+      snet                = "lbneta"
     }
   }
 
