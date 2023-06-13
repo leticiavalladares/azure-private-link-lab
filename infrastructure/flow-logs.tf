@@ -2,9 +2,9 @@ resource "azurerm_network_watcher_flow_log" "log" {
   for_each = local.nsgs
 
   name                 = "${each.key}-log"
-  network_watcher_name = data.azurerm_network_watcher.net_watcher_westeu.name
-  resource_group_name  = data.azurerm_network_watcher.net_watcher_westeu.resource_group_name
-  location             = data.azurerm_network_watcher.net_watcher_westeu.location
+  network_watcher_name = data.azurerm_network_watcher.net_watcher[each.value.location].name
+  resource_group_name  = data.azurerm_network_watcher.net_watcher[each.value.location].resource_group_name
+  location             = data.azurerm_network_watcher.net_watcher[each.value.location].location
 
   network_security_group_id = azurerm_network_security_group.nsg[each.key].id
   storage_account_id        = azurerm_storage_account.storage[each.value.vnet].id

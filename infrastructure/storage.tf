@@ -2,7 +2,7 @@ resource "azurerm_storage_account" "storage" {
   for_each = local.vnets
 
   name                      = each.value.storage_name
-  resource_group_name       = "rg-${each.key}-${local.resource_suffix}"
+  resource_group_name       = "rg-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
   location                  = each.value.location
   account_replication_type  = "LRS"
   account_tier              = "Standard"
@@ -35,7 +35,7 @@ resource "azurerm_storage_account" "diag" {
   for_each = local.vnets
 
   name                      = each.value.diag_name
-  resource_group_name       = "rg-${each.key}-${local.resource_suffix}"
+  resource_group_name       = "rg-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
   location                  = each.value.location
   account_replication_type  = "LRS"
   account_tier              = "Standard"

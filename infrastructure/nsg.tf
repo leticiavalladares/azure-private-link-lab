@@ -1,9 +1,9 @@
 resource "azurerm_network_security_group" "nsg" {
   for_each = local.nsgs
 
-  name                = "nsg-${each.key}-${local.resource_suffix}"
+  name                = "nsg-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
   location            = each.value.location
-  resource_group_name = "rg-${each.value.vnet}-${local.resource_suffix}"
+  resource_group_name = "rg-${each.value.vnet}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
 
   dynamic "security_rule" {
     for_each = local.nsgs[each.key].security_rules
@@ -22,7 +22,7 @@ resource "azurerm_network_security_group" "nsg" {
   }
 
   tags = merge(local.default_tags, {
-    Name = "nsg-${each.key}-${local.resource_suffix}"
+    Name = "nsg-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
   })
 
   depends_on = [azurerm_resource_group.resource_group]

@@ -7,8 +7,19 @@ locals {
     Owner       = "anyemail@cloudycloud.cloud"
   }
 
-  resource_suffix = join("-", ["dev-west-eu", "thousandeyes"])
+  resource_suffix = join("-", ["eu", "privatelink"])
   fw_ip           = "10.20.0.0"
+
+  net_watchers = {
+    westeurope = {
+      name = "NetworkWatcher_westeurope"
+      rg_name = "NetworkWatcherRG"
+    },
+    northeurope = {
+      name = "NetworkWatcher_northeurope"
+      rg_name = "NetworkWatcherRG"
+    }
+  }
 
   vnets = {
     external = {
@@ -43,6 +54,17 @@ locals {
       workspace          = "db-logs"
       peer_to_hub_name   = "cn-db-to-external"
       peer_to_spoke_name = "cn-external-to-db"
+    },
+    plink = {
+      cidr               = "192.168.0.0/16"
+      tgw_attachment     = "plinka"
+      type               = "plink"
+      location           = "northeurope"
+      storage_name       = "plinklogsjune2023"
+      diag_name          = "diagplinklogsjune2023"
+      workspace          = "plink-logs"
+      peer_to_hub_name   = ""
+      peer_to_spoke_name = ""
     }
   }
 
@@ -55,6 +77,7 @@ locals {
       rtb      = "mgmt"
       nsg      = "ftd-sg"
       location = "westeurope"
+      plinkpol = true
       main_rtb = false
       routes = [{
         name        = "mgmt1"
@@ -73,6 +96,7 @@ locals {
       rtb      = "outside"
       nsg      = "ftd-sg"
       location = "westeurope"
+      plinkpol = true
       main_rtb = true
       routes = [{
         name        = "outside1"
@@ -90,8 +114,9 @@ locals {
       cidr     = "10.1.1.0/24"
       vnet     = "external"
       rtb      = "inside"
-      nsg      = "ftd-sg"
+      nsg      = "internal-sg" #"ftd-sg"
       location = "westeurope"
+      plinkpol = true
       main_rtb = false
       routes = [{
         name        = "inside1"
@@ -126,6 +151,7 @@ locals {
       rtb      = "appnet"
       nsg      = "app-sg"
       location = "westeurope"
+      plinkpol = true
       main_rtb = true
       routes = [{
         name        = "appnet1"
@@ -144,6 +170,7 @@ locals {
       nsg      = "ftd-http-sg"
       location = "westeurope"
       rtb      = "dbneta"
+      plinkpol = true
       main_rtb = true
       routes = [{
         name        = "dbneta1"
@@ -162,7 +189,27 @@ locals {
       nsg      = "ftd-http-sg"
       location = "westeurope"
       rtb      = ""
+      plinkpol = true
       main_rtb = false
+      routes = [{
+        name        = ""
+        cidr_dest   = ""
+        dest        = ""
+        vnet        = ""
+        rtb         = ""
+        next_hop_ip = ""
+      }]
+    },
+    {
+      name     = "lbneta"
+      type     = "private"
+      cidr     = "192.168.0.0/24"
+      vnet     = "plink"
+      nsg      = "plink-app-sg"
+      location = "northeurope"
+      rtb      = "lbneta"
+      plinkpol = false
+      main_rtb = true
       routes = [{
         name        = ""
         cidr_dest   = ""
@@ -305,7 +352,97 @@ locals {
           cidr_block  = "0.0.0.0/0"
         }
       }
+    },
+    plink-app-sg = {
+      description = "Deny everything inbound"
+      vnet        = "plink"
+      location    = "northeurope"
+      security_rules = {
+        http = {
+          priority    = 1001
+          description = "Deny everything"
+          access      = "Deny"
+          direction   = "Inbound"
+          from_port   = "*"
+          to_port     = "*"
+          protocol    = "*"
+          cidr_block  = "0.0.0.0/0"
+        },
+        out = {
+          priority    = 1001
+          description = "Allow everything"
+          access      = "Allow"
+          direction   = "Outbound"
+          from_port   = "*"
+          to_port     = "*"
+          protocol    = "*"
+          cidr_block  = "0.0.0.0/0"
+        }
+      }
+    },
+    internal-sg = {
+      description = "Deny everything outbound"
+      vnet        = "external"
+      location    = "westeurope"
+      security_rules = {
+        http = {
+          priority    = 1001
+          description = "Allow HTTP"
+          access      = "Allow"
+          direction   = "Inbound"
+          from_port   = 80
+          to_port     = 80
+          protocol    = "Tcp"
+          cidr_block  = "0.0.0.0/0"
+        },
+        https = {
+          priority    = 1002
+          description = "Allow HTTPS"
+          access      = "Allow"
+          direction   = "Inbound"
+          from_port   = 443
+          to_port     = 443
+          protocol    = "Tcp"
+          cidr_block  = "0.0.0.0/0"
+        },
+        out = {
+          priority    = 1001
+          description = "Deny everything"
+          access      = "Deny"
+          direction   = "Outbound"
+          from_port   = "*"
+          to_port     = "*"
+          protocol    = "*"
+          cidr_block  = "0.0.0.0/0"
+        }
+      }
     }
   }
 
+  lbs = {
+    plink = {
+      frontend_ip = "192.168.0.10"
+      pip         = "lb"
+    }
+  }
+
+  pips = {
+    lb = {
+      sku          = "Standard"
+      alloc_method = "Static"
+    }
+  }
+
+  plinkservices = {
+    plinkservice = {
+      lb = "plink"
+      nat_ip_conf = {
+        primary = {
+          private_ip = "192.168.0.5"
+          snet       = "lbneta"
+          primary    = true
+        }
+      }
+    }
+  }
 }
