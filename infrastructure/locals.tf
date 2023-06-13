@@ -423,6 +423,7 @@ locals {
     plink = {
       frontend_ip = "192.168.0.10"
       pip         = "lb"
+      location    = "northeurope"
     }
   }
 
@@ -430,12 +431,14 @@ locals {
     lb = {
       sku          = "Standard"
       alloc_method = "Static"
+      location     = "northeurope"
     }
   }
 
   plinkservices = {
     plinkservice = {
-      lb = "plink"
+      lb       = "plink"
+      location = "northeurope"
       nat_ip_conf = {
         primary = {
           private_ip = "192.168.0.5"

@@ -1,21 +1,21 @@
 resource "azurerm_public_ip" "pip" {
   for_each = local.pips
 
-  name                = "pip-${each.key}-${local.resource_suffix}"
+  name                = "pip-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
   sku                 = each.value.sku
   location            = azurerm_resource_group.resource_group[element(keys({ for n, val in local.vnets : n => val if val.type == "plink" }), 0)].location
   resource_group_name = azurerm_resource_group.resource_group[element(keys({ for n, val in local.vnets : n => val if val.type == "plink" }), 0)].name
   allocation_method   = each.value.alloc_method
 
   tags = merge(local.default_tags, {
-    Name = "pip-${each.key}-${local.resource_suffix}"
+    Name = "pip-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
   })
 }
 
 resource "azurerm_lb" "lb" {
   for_each = local.lbs
 
-  name                = "lb-${each.key}-${local.resource_suffix}"
+  name                = "lb-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
   sku                 = "Standard"
   location            = azurerm_resource_group.resource_group[element(keys({ for n, val in local.vnets : n => val if val.type == "plink" }), 0)].location
   resource_group_name = azurerm_resource_group.resource_group[element(keys({ for n, val in local.vnets : n => val if val.type == "plink" }), 0)].name
@@ -26,14 +26,14 @@ resource "azurerm_lb" "lb" {
   }
 
   tags = merge(local.default_tags, {
-    Name = "lb-${each.key}-${local.resource_suffix}"
+    Name = "lb-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
   })
 }
 
 resource "azurerm_private_link_service" "plink_service" {
   for_each = local.plinkservices
 
-  name                = "${each.key}-${local.resource_suffix}"
+  name                = "${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
   location            = azurerm_resource_group.resource_group[element(keys({ for n, val in local.vnets : n => val if val.type == "plink" }), 0)].location
   resource_group_name = azurerm_resource_group.resource_group[element(keys({ for n, val in local.vnets : n => val if val.type == "plink" }), 0)].name
 
@@ -52,7 +52,7 @@ resource "azurerm_private_link_service" "plink_service" {
   }
 
   tags = merge(local.default_tags, {
-    Name = "${each.key}-${local.resource_suffix}"
+    Name = "${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
   })
 
 }
