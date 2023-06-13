@@ -12,11 +12,11 @@ locals {
 
   net_watchers = {
     westeurope = {
-      name = "NetworkWatcher_westeurope"
+      name    = "NetworkWatcher_westeurope"
       rg_name = "NetworkWatcherRG"
     },
     northeurope = {
-      name = "NetworkWatcher_northeurope"
+      name    = "NetworkWatcher_northeurope"
       rg_name = "NetworkWatcherRG"
     }
   }

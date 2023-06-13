@@ -20,10 +20,13 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [azurerm_lb.lb](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/lb) | resource |
 | [azurerm_log_analytics_linked_storage_account.logs](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/log_analytics_linked_storage_account) | resource |
 | [azurerm_log_analytics_workspace.log_workspace](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/log_analytics_workspace) | resource |
 | [azurerm_network_security_group.nsg](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/network_security_group) | resource |
 | [azurerm_network_watcher_flow_log.log](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/network_watcher_flow_log) | resource |
+| [azurerm_private_link_service.plink_service](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/private_link_service) | resource |
+| [azurerm_public_ip.pip](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/public_ip) | resource |
 | [azurerm_resource_group.resource_group](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/resource_group) | resource |
 | [azurerm_route_table.route_table](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/route_table) | resource |
 | [azurerm_storage_account.diag](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/storage_account) | resource |
@@ -34,7 +37,7 @@ No modules.
 | [azurerm_virtual_network.vnet](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/virtual_network) | resource |
 | [azurerm_virtual_network_peering.vnet_peering_to_hub](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/virtual_network_peering) | resource |
 | [azurerm_virtual_network_peering.vnet_peering_to_spoke](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/virtual_network_peering) | resource |
-| [azurerm_network_watcher.net_watcher_westeu](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/data-sources/network_watcher) | data source |
+| [azurerm_network_watcher.net_watcher](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/data-sources/network_watcher) | data source |
 
 ## Inputs
 
