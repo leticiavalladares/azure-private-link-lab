@@ -13,7 +13,7 @@ resource "azurerm_role_assignment" "role_assign" {
 resource "azurerm_key_vault" "key_vault" {
   for_each = local.net_watchers
 
-  name                       = "kv${substr(each.value.location, 0, 1)}${trim(tostring(local.resource_suffix), "-")}"
+  name                       = "kv${substr(each.value.location, 0, 1)}euplink"
   location                   = data.azurerm_network_watcher.net_watcher[each.key].location
   resource_group_name        = each.value.rg_name
   tenant_id                  = data.azurerm_client_config.current.tenant_id
@@ -23,7 +23,7 @@ resource "azurerm_key_vault" "key_vault" {
   enable_rbac_authorization  = true
 
   tags = merge(local.default_tags, {
-    Name = "kv${substr(each.value.location, 0, 1)}${trim(tostring(local.resource_suffix), "-")}"
+    Name = "kv${substr(each.value.location, 0, 1)}euplink"
   })
 }
 
