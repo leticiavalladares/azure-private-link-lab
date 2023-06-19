@@ -7,17 +7,20 @@ locals {
     Owner       = "anyemail@cloudycloud.cloud"
   }
 
-  resource_suffix = join("-", ["eu", "privatelink"])
-  fw_ip           = "10.20.0.0"
+  resource_suffix        = join("-", ["eu", "privatelink"])
+  fw_ip                  = "10.20.0.0"
+  target_subscription_id = var.subscription_id
 
   net_watchers = {
     westeurope = {
-      name    = "NetworkWatcher_westeurope"
-      rg_name = "NetworkWatcherRG"
+      name     = "NetworkWatcher_westeurope"
+      rg_name  = "NetworkWatcherRG"
+      location = "westeurope"
     },
     northeurope = {
-      name    = "NetworkWatcher_northeurope"
-      rg_name = "NetworkWatcherRG"
+      name     = "NetworkWatcher_northeurope"
+      rg_name  = "NetworkWatcherRG"
+      location = "northeurope"
     }
   }
 
@@ -448,6 +451,40 @@ locals {
           primary    = true
         }
       }
+    }
+  }
+
+  roles = [
+    "Key Vault Secrets Officer",
+    "Key Vault Secrets User"
+  ]
+
+  role_assign = {
+    officer_role = {
+      scope              = "/subscriptions/${local.target_subscription_id}"
+      role_definition_id = data.azurerm_role_definition.role_definition["Key Vault Secrets Officer"].id
+      principal_id       = data.azurerm_client_config.current.object_id
+    },
+    user_role_1 = {
+      scope              = "/subscriptions/${local.target_subscription_id}"
+      role_definition_id = data.azurerm_role_definition.role_definition["Key Vault Secrets User"].id
+      principal_id       = var.principal_id_dev_user_1
+    },
+    user_role_2 = {
+      scope              = "/subscriptions/${local.target_subscription_id}"
+      role_definition_id = data.azurerm_role_definition.role_definition["Key Vault Secrets User"].id
+      principal_id       = var.principal_id_dev_user_2
+    }
+  }
+
+  vms = {
+    app1 = {
+      secret_name = "app1-ssh"
+      location    = "northeurope"
+    },
+    app2 = {
+      secret_name = "app2-ssh"
+      location    = "northeurope"
     }
   }
 }
