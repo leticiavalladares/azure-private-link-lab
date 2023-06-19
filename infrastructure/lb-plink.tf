@@ -57,5 +57,19 @@ resource "azurerm_private_link_service" "plink_service" {
   tags = merge(local.default_tags, {
     Name = "${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
   })
+}
 
+resource "azurerm_private_endpoint" "private_endpoint" {
+  for_each = { for subnet, val in local.subnets : val.name => val if val.endpoint_type != ""}
+
+  name                = "${each.value.endpoint_type}-endpoint-${each.value.name}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
+  location            = azurerm_resource_group.resource_group[each.value.vnet].location
+  resource_group_name = azurerm_resource_group.resource_group[each.value.vnet].name
+  subnet_id           = azurerm_subnet.subnet[each.value.name].id
+
+  private_service_connection {
+    name                           = "privateserviceconnection-${each.value.name}"
+    private_connection_resource_id = azurerm_private_link_service.plink_service[each.value.plink].id
+    is_manual_connection           = false
+  }
 }

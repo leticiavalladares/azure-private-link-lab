@@ -2,7 +2,7 @@ resource "azurerm_storage_account" "storage" {
   for_each = local.vnets
 
   name                      = each.value.storage_name
-  resource_group_name       = "rg-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
+  resource_group_name       = azurerm_resource_group.resource_group[each.key].name
   location                  = each.value.location
   account_replication_type  = "LRS"
   account_tier              = "Standard"
@@ -32,10 +32,10 @@ resource "azurerm_storage_account" "storage" {
 }
 
 resource "azurerm_storage_account" "diag" {
-  for_each = local.vnets                      # Debug: { for vnet, val in local.vnets : vnet => val} #  if vnet != "external"
+  for_each = local.vnets # Debug: { for vnet, val in local.vnets : vnet => val} #  if vnet != "external"
 
   name                      = each.value.diag_name
-  resource_group_name       = "rg-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
+  resource_group_name       = azurerm_resource_group.resource_group[each.key].name
   location                  = each.value.location
   account_replication_type  = "LRS"
   account_tier              = "Standard"

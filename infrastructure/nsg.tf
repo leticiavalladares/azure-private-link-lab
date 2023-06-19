@@ -3,7 +3,7 @@ resource "azurerm_network_security_group" "nsg" {
 
   name                = "nsg-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
   location            = each.value.location
-  resource_group_name = "rg-${each.value.vnet}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
+  resource_group_name = azurerm_resource_group.resource_group[each.value.vnet].name
 
   dynamic "security_rule" {
     for_each = local.nsgs[each.key].security_rules

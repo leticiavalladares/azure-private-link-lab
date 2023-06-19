@@ -35,6 +35,7 @@ locals {
       workspace          = "external-logs"
       peer_to_hub_name   = ""
       peer_to_spoke_name = ""
+      private_dns_zone   = true
     },
     app = {
       cidr               = "10.2.0.0/16"
@@ -46,6 +47,7 @@ locals {
       workspace          = "app-logs"
       peer_to_hub_name   = "cn-app-to-external"
       peer_to_spoke_name = "cn-external-to-app"
+      private_dns_zone   = true
     },
     db = {
       cidr               = "10.3.0.0/16"
@@ -57,6 +59,7 @@ locals {
       workspace          = "db-logs"
       peer_to_hub_name   = "cn-db-to-external"
       peer_to_spoke_name = "cn-external-to-db"
+      private_dns_zone   = false
     },
     plink = {
       cidr               = "192.168.0.0/16"
@@ -68,20 +71,23 @@ locals {
       workspace          = "plink-logs"
       peer_to_hub_name   = ""
       peer_to_spoke_name = ""
+      private_dns_zone   = true
     }
   }
 
   subnets = [
     {
-      name     = "mgmt"
-      type     = "public"
-      cidr     = "10.1.10.0/24"
-      vnet     = "external"
-      rtb      = "mgmt"
-      nsg      = "ftd-sg"
-      location = "westeurope"
-      plinkpol = true
-      main_rtb = false
+      name          = "mgmt"
+      type          = "public"
+      cidr          = "10.1.10.0/24"
+      vnet          = "external"
+      rtb           = "mgmt"
+      nsg           = "ftd-sg"
+      location      = "westeurope"
+      plinkpol      = true
+      main_rtb      = false
+      plink         = ""
+      endpoint_type = ""
       routes = [{
         name        = "mgmt1"
         cidr_dest   = "0.0.0.0/0"
@@ -92,15 +98,17 @@ locals {
       }]
     },
     {
-      name     = "outside"
-      type     = "public"
-      cidr     = "10.1.2.0/24"
-      vnet     = "external"
-      rtb      = "outside"
-      nsg      = "ftd-sg"
-      location = "westeurope"
-      plinkpol = true
-      main_rtb = true
+      name          = "outside"
+      type          = "public"
+      cidr          = "10.1.2.0/24"
+      vnet          = "external"
+      rtb           = "outside"
+      nsg           = "ftd-sg"
+      location      = "westeurope"
+      plinkpol      = true
+      main_rtb      = true
+      plink         = "plinkservice"
+      endpoint_type = "inbound"
       routes = [{
         name        = "outside1"
         cidr_dest   = "0.0.0.0/0"
@@ -112,15 +120,17 @@ locals {
 
     },
     {
-      name     = "inside"
-      type     = "private"
-      cidr     = "10.1.1.0/24"
-      vnet     = "external"
-      rtb      = "inside"
-      nsg      = "internal-sg" #"ftd-sg"
-      location = "westeurope"
-      plinkpol = true
-      main_rtb = false
+      name          = "inside"
+      type          = "private"
+      cidr          = "10.1.1.0/24"
+      vnet          = "external"
+      rtb           = "inside"
+      nsg           = "internal-sg" #"ftd-sg"
+      location      = "westeurope"
+      plinkpol      = true
+      main_rtb      = false
+      plink         = "plinkservice"
+      endpoint_type = "outbound"
       routes = [{
         name        = "inside1"
         cidr_dest   = "0.0.0.0/0"
@@ -147,15 +157,17 @@ locals {
       }]
     },
     {
-      name     = "appnet"
-      type     = "private"
-      cidr     = "10.2.1.0/24"
-      vnet     = "app"
-      rtb      = "appnet"
-      nsg      = "app-sg"
-      location = "westeurope"
-      plinkpol = true
-      main_rtb = true
+      name          = "appnet"
+      type          = "private"
+      cidr          = "10.2.1.0/24"
+      vnet          = "app"
+      rtb           = "appnet"
+      nsg           = "app-sg"
+      location      = "westeurope"
+      plinkpol      = true
+      main_rtb      = true
+      plink         = "plinkservice"
+      endpoint_type = ""
       routes = [{
         name        = "appnet1"
         cidr_dest   = "0.0.0.0/0"
@@ -166,15 +178,17 @@ locals {
       }]
     },
     {
-      name     = "dbneta"
-      type     = "private"
-      cidr     = "10.3.1.0/24"
-      vnet     = "db"
-      nsg      = "ftd-http-sg"
-      location = "westeurope"
-      rtb      = "dbneta"
-      plinkpol = true
-      main_rtb = true
+      name          = "dbneta"
+      type          = "private"
+      cidr          = "10.3.1.0/24"
+      vnet          = "db"
+      nsg           = "ftd-http-sg"
+      location      = "westeurope"
+      rtb           = "dbneta"
+      plinkpol      = true
+      main_rtb      = true
+      plink         = ""
+      endpoint_type = ""
       routes = [{
         name        = "dbneta1"
         cidr_dest   = "0.0.0.0/0"
@@ -185,15 +199,17 @@ locals {
       }]
     },
     {
-      name     = "dbnetb"
-      type     = "private"
-      cidr     = "10.3.2.0/24"
-      vnet     = "db"
-      nsg      = "ftd-http-sg"
-      location = "westeurope"
-      rtb      = ""
-      plinkpol = true
-      main_rtb = false
+      name          = "dbnetb"
+      type          = "private"
+      cidr          = "10.3.2.0/24"
+      vnet          = "db"
+      nsg           = "ftd-http-sg"
+      location      = "westeurope"
+      rtb           = ""
+      plinkpol      = true
+      main_rtb      = false
+      plink         = ""
+      endpoint_type = ""
       routes = [{
         name        = ""
         cidr_dest   = ""
@@ -204,15 +220,17 @@ locals {
       }]
     },
     {
-      name     = "lbneta"
-      type     = "private"
-      cidr     = "192.168.0.0/24"
-      vnet     = "plink"
-      nsg      = "plink-app-sg"
-      location = "northeurope"
-      rtb      = "lbneta"
-      plinkpol = false
-      main_rtb = true
+      name          = "lbneta"
+      type          = "private"
+      cidr          = "192.168.0.0/24"
+      vnet          = "plink"
+      nsg           = "plink-app-sg"
+      location      = "northeurope"
+      rtb           = "lbneta"
+      plinkpol      = false
+      main_rtb      = true
+      plink         = ""
+      endpoint_type = ""
       routes = [{
         name        = ""
         cidr_dest   = ""

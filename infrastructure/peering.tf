@@ -39,7 +39,7 @@ resource "azurerm_route_table" "route_table" {
 
   name                          = "rtb-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
   location                      = each.value.location
-  resource_group_name           = "rg-${each.value.vnet}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
+  resource_group_name           = azurerm_resource_group.resource_group[each.value.vnet].name
   disable_bgp_route_propagation = false
 
   dynamic "route" {

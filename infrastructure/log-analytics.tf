@@ -3,7 +3,7 @@ resource "azurerm_log_analytics_workspace" "log_workspace" {
 
   name                = "${each.value.workspace}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
   location            = each.value.location
-  resource_group_name = "rg-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
+  resource_group_name = azurerm_resource_group.resource_group[each.key].name
   sku                 = "PerGB2018"
   retention_in_days   = 30
 
@@ -18,7 +18,7 @@ resource "azurerm_log_analytics_linked_storage_account" "logs" {
   for_each = local.vnets
 
   data_source_type      = "CustomLogs"
-  resource_group_name   = "rg-${each.key}-${substr(each.value.location, 0, 1)}${local.resource_suffix}"
+  resource_group_name   = azurerm_resource_group.resource_group[each.key].name
   workspace_resource_id = azurerm_log_analytics_workspace.log_workspace[each.key].id
   storage_account_ids   = [azurerm_storage_account.storage[each.key].id]
 
