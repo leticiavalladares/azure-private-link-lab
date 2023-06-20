@@ -32,7 +32,7 @@ resource "azurerm_storage_account" "storage" {
 }
 
 resource "azurerm_storage_account" "diag" {
-  for_each = local.vnets # Debug: { for vnet, val in local.vnets : vnet => val} #  if vnet != "external"
+  for_each = local.vnets # { for vnet, val in local.vnets : vnet => val if vnet != "db" } 
 
   name                      = each.value.diag_name
   resource_group_name       = azurerm_resource_group.resource_group[each.key].name

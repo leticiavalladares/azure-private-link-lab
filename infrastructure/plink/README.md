@@ -3,7 +3,7 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.2.9 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 1.5.0 |
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | =3.56.0 |
 
 ## Providers
@@ -28,6 +28,12 @@ No modules.
 | [azurerm_log_analytics_workspace.log_workspace](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/log_analytics_workspace) | resource |
 | [azurerm_network_security_group.nsg](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/network_security_group) | resource |
 | [azurerm_network_watcher_flow_log.log](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/network_watcher_flow_log) | resource |
+| [azurerm_private_dns_resolver.dns_resolver](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/private_dns_resolver) | resource |
+| [azurerm_private_dns_resolver_dns_forwarding_ruleset.dns_forwarding_rule_set](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/private_dns_resolver_dns_forwarding_ruleset) | resource |
+| [azurerm_private_dns_resolver_inbound_endpoint.dns_inbound_endpoint](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/private_dns_resolver_inbound_endpoint) | resource |
+| [azurerm_private_dns_resolver_outbound_endpoint.dns_outbound_point](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/private_dns_resolver_outbound_endpoint) | resource |
+| [azurerm_private_dns_zone.private_dns_zone](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/private_dns_zone) | resource |
+| [azurerm_private_dns_zone_virtual_network_link.private_dns_vnet_link](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/private_dns_zone_virtual_network_link) | resource |
 | [azurerm_private_link_service.plink_service](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/private_link_service) | resource |
 | [azurerm_resource_group.resource_group](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/resource_group) | resource |
 | [azurerm_role_assignment.role_assign](https://registry.terraform.io/providers/hashicorp/azurerm/3.56.0/docs/resources/role_assignment) | resource |
